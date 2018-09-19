@@ -1,5 +1,5 @@
 # Askme
-## Because we kinda have 4 more days to finish this shit
+##### Because we kinda have 4 more days to finish this shit
 
 # Architecture
 - __UI KIT__ : native-base
@@ -9,6 +9,12 @@
 - __Store persistence__ : *redux-persist*
 - __Forms__ : *formik*
 
+# Google Sign In __DEVELOPER_ERROR__
+If you received the __DEVELOPER_ERROR__ message when signing in, then you will need to add your SHA-1 fingerprint to the Firebase app.
+
+- Retrieve your SHA-1 fingerprint by following one of the answers [here](https://stackoverflow.com/questions/15727912/sha-1-fingerprint-of-keystore-certificate/33479550#33479550) depending on your OS 
+- On your firebase askme app console, navigate to Project Settings > General. Scroll all the way down, you should see "Your Apps"
+- On "Askme Android (com.askme)", click "Add fingerprint"; and add your fingerprint you retrieved earlier
 
 # Wtf is inside /src
 - /api/
