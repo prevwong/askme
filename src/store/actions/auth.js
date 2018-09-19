@@ -72,6 +72,12 @@ function logOut() {
         type: LOG_OUT
     }
 }
+export function unvalidateUser() {
+    return (dispatch) => {
+        dispatch(logOut());
+        dispatch(setUser(null));
+    }
+}
 export function validateUser() {
     return (dispatch) => {
         dispatch(logInSuccess());
@@ -142,7 +148,7 @@ export function signOut() {
                     await GoogleSignin.revokeAccess();
                     await GoogleSignin.signOut();
                 } catch (err) { }
-                dispatch(logOut());
+                dispatch(unvalidateUser());
                 resolve();
             })
         })

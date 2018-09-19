@@ -3,10 +3,9 @@ import {
 } from 'store/reducers/user';
 import firebase from "react-native-firebase";
 
-export function setUser() {
-    console.log("SETTING USER");
+export function setUser(user) {
     return {
         type: SET_USER,
-        user: firebase.auth().currentUser
+        user: user === null ? user : firebase.auth().currentUser
     }
 }

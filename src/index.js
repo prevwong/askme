@@ -24,7 +24,9 @@ class App extends React.Component {
             });
             this.checkNotifications();
             this.props.dispatchValidateUser();
-        });
+        }).catch(err => {
+            
+        })
     }
     componentWillUnmount() {
         if (this.token) this.token();
