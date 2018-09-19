@@ -5,6 +5,17 @@ export const asyncForEach = async (arr, callback) => {
     }
 }
 
+export const extractFirstLastName = (displayName) => {
+    displayName = displayName.split(" ");
+    const first_name = displayName[0];
+    displayName.shift();
+    const last_name = displayName.join(" ");
+    return {
+        first_name,
+        last_name
+    }
+}
+
 
 
 

@@ -6,6 +6,7 @@ import {connect} from "react-redux";
 
 class Dashboard extends Component {
     render() {
+        console.log("DASHBOARD-RENDER");
         return (
             <View>
                 <Text>Dashboard</Text>

@@ -1,60 +1,76 @@
 import React from 'react';
 import { Alert } from 'react-native';
 
-import { userNoPhone, logInSuccess } from 'store/actions/auth'
+import { userNoPhone, logInSuccess, validateUser } from './store/actions/auth'
 import { connect } from 'react-redux';
-import screens from 'screens';
 import { YellowBox } from 'react-native';
-import api from "api";
-import firebase from "react-native-firebase";
+import api from "./api";
 import { Spinner, Container, View } from 'native-base';
+import screens from "./screens";
+import firebase from "react-native-firebase";
 
-console.log(screens.auth);
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
 class App extends React.Component {
     loaded = false
-    state = {
-        user: null,
-    }
+   
     notificationListener = null
     notificationDisplayedListener = null
     async componentDidMount() {
-
-        try {
-            const user = await api("users/isSignedIn");
-            // api("users/manageRegistrationTokens");
-            this.loaded = true;
-            // api("notifications/checkNotifications").then((onNotificationDisplayed, onNotification) => {
-            //     console.log("NOTIFICATION", onNotificationDisplayed, onNotification)
-            // });
-            this.props.dispatchLogInSuccess(user);
-        } catch (err) {
-            this.loaded = true;
-            this.setState({ isLoading: false })
-        }
+        this.loaded = true;
+        api("users/isSignedIn").then(user => {
+            api("users/manageRegistrationTokens").then((fn) => {
+                this.token = fn;
+            });
+            this.checkNotifications();
+            this.props.dispatchValidateUser();
+        });
     }
     componentWillUnmount() {
         if (this.token) this.token();
         if (this.notificationListener) this.notificationListener();
         if (this.notificationDisplayedListener) this.notificationDisplayedListener();
     }
-    componentDidUpdate(){
+    async checkNotifications() {
+        console.log("checking notifications")
+        const enabled = await firebase.messaging().hasPermission();
+        if (enabled) {
+            const channel = new firebase.notifications.Android.Channel('remindus-channel', 'Remind-Us Channel', firebase.notifications.Android.Importance.Max)
+                .setDescription('RemindUs notification channel');
 
+            this.notificationDisplayedListener = firebase.notifications().onNotificationDisplayed((notification) => {
+                console.log("notification # received")
+            });
+            this.notificationListener = firebase.notifications().onNotification((notification) => {
+                // Process your notification as required
+                console.log("notification received!");
+            });
+        } else {
+            console.log("no permission, requesting...")
+            try {
+                await firebase.messaging().requestPermission();
+                this.checkNotifications();
+            } catch (error) {
+                // User has rejected permissions
+                console.log("notification request error", error);
+            }
+        }
     }
     render() {
         let loggedIn = false;
-        const { user, isAuthenticating, error } = this.props.auth;
-        
-        if ( error ) {
+        const { authenticated, isAuthenticating, error } = this.props.auth;
+        const { user } = this.props.user;
+
+        if (error) {
             Alert.alert("Error", error.message);
         }
 
+
         $render = (
-            <View style={{flex:1}}>
+            <View style={{ flex: 1 }}>
                 <Container>
-                    { user && <screens.user /> }
-                    { !user && this.loaded && <screens.auth /> } 
+                    {user && <screens.user />}
+                    {!user && this.loaded && <screens.auth />}
                 </Container>
                 {isAuthenticating &&
                     <View style={{ flexDirection: "column", flex: 1, justifyContent: "center", position: "absolute", backgroundColor: "rgba(255,255,255,0.8)", height: "100%", width: "100%" }}>
@@ -63,7 +79,7 @@ class App extends React.Component {
                 }
             </View>
         )
-        
+
         return $render;
     }
 }
@@ -72,11 +88,13 @@ class App extends React.Component {
 
 const mapDispatchToProps = {
     dispatchLogInSuccess: (user) => (dispatch) => dispatch(logInSuccess(user)),
+    dispatchValidateUser: () => (dispatch) => dispatch(validateUser()),
     dispatchLogInNoPhone: () => (dispatch) => dispatch(userNoPhone())
 }
 
 const mapStateToProps = state => ({
-    auth: state.auth
+    auth: state.auth,
+    user: state.user
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

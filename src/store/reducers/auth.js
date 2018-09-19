@@ -14,11 +14,11 @@ export const SIGN_UP_FAILURE = 'SIGN_UP_FAILURE';
 
 const initialState = {
     isAuthenticating: false,
-    user: null,
     error: null,
     needInfo: false,
     noPhone: false,
-    socialEmailExists: false
+    socialEmailExists: false,
+    authenticated: false
 }
 
 export default (state = initialState, action) => {
@@ -63,7 +63,7 @@ export default (state = initialState, action) => {
         case LOG_IN_SUCCESS:
             return {
                 ...state,
-                user: action.user,
+                authenticated: true,
                 error: false,
                 isAuthenticating: false,
             }

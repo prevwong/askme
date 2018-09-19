@@ -10,7 +10,10 @@ export default api = async (path, params) => {
         const res = await paths[path0][path1](params);
         return Promise.resolve(res);
     } catch (err) {
-        console.log("API ERROR", err, path)
+        // if (err.message.contains("default.auth().currentUser.uid")) {
+        //     // user not yet login, but no need to throw error
+        //     return Promise.resolve(false);
+        // }
         let message = "Something went wrong, please try again later."
         if (err.response) {
             if (err.response.data.message) {

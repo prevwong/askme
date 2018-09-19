@@ -13,6 +13,7 @@ import {
 } from 'store/reducers/auth';
 import firebase from "react-native-firebase";
 import { GoogleSignin } from 'react-native-google-signin';
+import { setUser } from './user';
 
 function signUp() {
     return {
@@ -23,7 +24,6 @@ function signUp() {
 function signUpSuccess(user) {
     return {
         type: SIGN_UP_SUCCESS,
-        user
     }
 }
 
@@ -43,7 +43,6 @@ function logIn() {
 export function logInSuccess(user) {
     return {
         type: LOG_IN_SUCCESS,
-        user: firebase.auth().currentUser
     }
 }
 
@@ -73,6 +72,12 @@ function logOut() {
         type: LOG_OUT
     }
 }
+export function validateUser() {
+    return (dispatch) => {
+        dispatch(logInSuccess());
+        dispatch(setUser());
+    }
+}
 
 export function createUser(email, password) {
     console.log("create user")
@@ -80,7 +85,8 @@ export function createUser(email, password) {
         dispatch(signUp());
         api("users/createUserWithEmail", { email, password }).then(user => {
             console.log("success cresting user")
-            dispatch(signUpSuccess(user));
+            dispatch(signUpSuccess());
+            dispatch(validateUser());
         }).catch(err => {
             console.log("error creting user");
             dispatch(signUpFailure(err));
@@ -92,8 +98,7 @@ export function authenticate(email, password) {
     return (dispatch) => {
         dispatch(logIn());
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then(data => {
-            dispatch(logInSuccess());
-
+            dispatch(validateUser());
         }).catch(error => {
             console.log("error logging in", error);
             dispatch(logInFailure(error));
@@ -114,7 +119,7 @@ export function socialAuthenticate() {
             // create a new firebase credential with the token
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
             await firebase.auth().signInAndRetrieveDataWithCredential(credential);
-            dispatch(logInSuccess());
+            dispatch(validateUser());
 
         } catch (e) {
             throw new Error(e);

@@ -32,6 +32,7 @@ const obj = {
         Landing: { screen: require("./user/Landing").default, },
         Dashboard: { screen: require("./user/Dashboard").default, },
         VerifyEmail: { screen: require("./user/VerifyEmail").default, },
+        GetUserInfo: { screen: require("./user/GetUserInfo").default, },
     }, {
             initialRouteName: "Landing"
         })
