@@ -1,0 +1,21 @@
+{
+  "presets": ["module:metro-react-native-babel-preset"],
+  "plugins": [
+    [
+      "module-resolver",
+      {
+        "cwd": "babelrc",
+        "root": [
+          "./src"
+        ],
+        "alias": {
+          "components": "./src/components",
+          "store": "./src/store",
+          "api": "./src/api",
+          "screens": "./src/screens",
+          "utils": "./src/utils"
+        }
+      }
+    ],
+  ]
+}
