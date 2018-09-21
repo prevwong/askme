@@ -75,3 +75,9 @@ exports.updateProfile = functions.firestore
             return admin.auth().updateUser(context.params.userId, data);
         }
     });
+
+exports.onUserDelete = functions.auth.user().onDelete((user) => {
+    console.log("deleting user...");
+    return admin.firestore().doc(`users/${user.uid}`).delete();
+    // ...
+});

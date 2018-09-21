@@ -1,32 +1,73 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import api from "api";
+import { createStackNavigator, createBottomTabNavigator, createDrawerNavigator } from 'react-navigation'
+import { setInfo } from "store/actions/user";
+import { signOut } from "store/actions/auth";
+
+import firebase from "react-native-firebase";
+
+const RequireInfoPages = createStackNavigator({
+    GetUserInfo: { screen: require("./InfoRequired/GetUserInfo").default, },
+}, {
+    drawerWidth: 300
+})
+
+const UserPages = createDrawerNavigator({
+    Dashboard: { screen: require("./Dashboard").default, },
+}, {
+    contentComponent: require("../../components/Sidebar").default,
+    drawerWidth: 300
+})
 
 class Landing extends Component {
-    async componentDidMount(){
-        const { authenticated } = this.props.auth;
-        const { user } = this.props.user;
-
-       
-        if (authenticated && user && !user.emailVerified) {
-            this.props.navigation.replace("VerifyEmail");
-        } else {
-            this.props.navigation.replace("Dashboard");
+    state = {
+        requireInfo: false
+    }
+    user = firebase.firestore().doc(`users/${firebase.auth().currentUser.uid}`);
+    profile = firebase.firestore().doc(`users/${firebase.auth().currentUser.uid}/meta/profile`);
+    static navigationOptions = { header:null }
+    async componentDidMount(props){
+        console.log("mounte", `users/${firebase.auth().currentUser.uid}/meta/profile`)
+        this.userUnsubscribe = this.user.onSnapshot(this.onUserUpdate.bind(this));
+        this.profileUnsubscribe = this.profile.onSnapshot(this.onProfileUpdate.bind(this));
+        // this.props.dispatchSetInfo(null);
+    }
+    async onUserUpdate(doc) {
+        if ( !doc.exists ) {
+            this.props.dispatchSignOut();
         }
-        
-        if ( authenticated ) {
-            api("users/getUserInfo").catch(err => {
-                this.props.navigation.navigate("GetUserInfo");
-            })
-        }
+        console.log("onUserupdate", `users/${firebase.auth().currentUser.uid}`);
+    }
+    async onProfileUpdate(doc) {
+        console.log("on update...dispatching")
+        this.props.dispatchSetInfo(doc.data());
+    }
+    componentWillUnmount() {
+        this.userUnsubscribe();
+        this.profileUnsubscribe();
     }
     render() {
-        return null;
+        
+        const {info} = this.props.user;
+        console.log("REQUIRED INFO", !!info);
+        return (
+            !info ? (
+                <RequireInfoPages onComplete={() => {
+                    console.log("COMPLETED")
+                }} />
+            ) : (
+                <UserPages />
+            )
+        );
     }
 }
 
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+    dispatchSetInfo: (info) => setInfo(info),
+    dispatchSignOut: () => signOut(),
+}
 
 const mapStateToProps = state => ({
     auth: state.auth,

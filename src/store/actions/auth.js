@@ -125,6 +125,10 @@ export function socialAuthenticate() {
             // create a new firebase credential with the token
             const credential = firebase.auth.GoogleAuthProvider.credential(data.idToken, data.accessToken);
             await firebase.auth().signInAndRetrieveDataWithCredential(credential);
+            const id = firebase.auth().currentUser.uid;
+            await firebase.firestore().doc(`users/${id}`).set({
+                createdAt: new Date()
+            });
             dispatch(validateUser());
 
         } catch (e) {
@@ -142,12 +146,20 @@ export function userNoPhone() {
 
 export function signOut() {
     return (dispatch) => {
+        console.log("signing out...")
         new Promise((resolve, reject) => {
             firebase.auth().signOut().then(async () => {
+                
                 try {
                     await GoogleSignin.revokeAccess();
                     await GoogleSignin.signOut();
                 } catch (err) { }
+                console.log("signing out");
+                dispatch(unvalidateUser());
+                resolve();
+                
+            }).catch(err => {
+                console.log("sign out error", err);
                 dispatch(unvalidateUser());
                 resolve();
             })

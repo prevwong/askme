@@ -1,34 +1,46 @@
 import React from 'react';
 import { Alert } from 'react-native';
 
-import { userNoPhone, logInSuccess, validateUser } from './store/actions/auth'
+import { userNoPhone, logInSuccess, validateUser, signOut } from './store/actions/auth'
 import { connect } from 'react-redux';
 import { YellowBox } from 'react-native';
 import api from "./api";
 import { Spinner, Container, View } from 'native-base';
 import screens from "./screens";
 import firebase from "react-native-firebase";
+import NavigatorService from 'utils/navigator';
 
 YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader']);
 
 class App extends React.Component {
     loaded = false
-   
+    userRef = null
     notificationListener = null
     notificationDisplayedListener = null
+    state = {
+        loaded: false
+    }
+    unmounted = false
     async componentDidMount() {
-        this.loaded = true;
+       
         api("users/isSignedIn").then(user => {
+            api("users/verifyCurrentSession").catch(err => {
+                console.log("verifying failed");
+                this.props.dispatchSignOut();
+            });
+            if ( !this.unmounted ) this.setState({  loaded: true })
             api("users/manageRegistrationTokens").then((fn) => {
                 this.token = fn;
             });
             this.checkNotifications();
             this.props.dispatchValidateUser();
         }).catch(err => {
-            
+            this.props.dispatchSignOut();
+            if (!this.unmounted) this.setState({ loaded: true })
         })
     }
     componentWillUnmount() {
+        this.unmounted = true;
         if (this.token) this.token();
         if (this.notificationListener) this.notificationListener();
         if (this.notificationDisplayedListener) this.notificationDisplayedListener();
@@ -58,31 +70,39 @@ class App extends React.Component {
             }
         }
     }
+    
+    shouldComponentUpdate(nextProps){
+        if ( nextProps.auth.authenticated && this.props.user.user && this.state.loaded && !!this.props.user.user === !!nextProps.user.user) {
+            return false;
+        }
+        return true;
+    }
+
     render() {
         let loggedIn = false;
         const { authenticated, isAuthenticating, error } = this.props.auth;
         const { user } = this.props.user;
 
+        console.log("recived rendr", !!user, authenticated);
         if (error) {
             Alert.alert("Error", error.message);
         }
 
+        if ( !this.state.loaded ) {
+            return null;
+        }
 
-        $render = (
-            <View style={{ flex: 1 }}>
-                <Container>
-                    {user && <screens.user />}
-                    {!user && this.loaded && <screens.auth />}
-                </Container>
-                {isAuthenticating &&
-                    <View style={{ flexDirection: "column", flex: 1, justifyContent: "center", position: "absolute", backgroundColor: "rgba(255,255,255,0.8)", height: "100%", width: "100%" }}>
-                        <Spinner />
-                    </View>
-                }
-            </View>
-        )
-
-        return $render;
+        return <View style={{ flex: 1 }}>
+            <Container>
+                {user && <screens.user />}
+                {!user && <screens.auth />}
+            </Container>
+            {isAuthenticating &&
+                <View style={{ flexDirection: "column", flex: 1, justifyContent: "center", position: "absolute", backgroundColor: "rgba(255,255,255,0.8)", height: "100%", width: "100%" }}>
+                    <Spinner />
+                </View>
+            }
+        </View>;
     }
 }
 
@@ -90,6 +110,7 @@ class App extends React.Component {
 
 const mapDispatchToProps = {
     dispatchLogInSuccess: (user) => (dispatch) => dispatch(logInSuccess(user)),
+    dispatchSignOut: (user) => (dispatch) => dispatch(signOut(user)),
     dispatchValidateUser: () => (dispatch) => dispatch(validateUser()),
     dispatchLogInNoPhone: () => (dispatch) => dispatch(userNoPhone())
 }

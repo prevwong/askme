@@ -6,12 +6,11 @@ import InputError from "components/InputError";
 import { connect } from "react-redux";
 import {extractFirstLastName} from "utils";
 
-import phoneUtil from "libphonenumber-js";
+import phoneUtil, { formatNumber, parseNumber }  from "libphonenumber-js";
 import Modal from "react-native-modal";
 import VerifyPhone from "./VerifyPhone";
 import firebase from "react-native-firebase";
-import { formatNumber, parseNumber } from 'libphonenumber-js'
-import api from "../../api";
+import api from "api";
 
 
 Yup.addMethod(Yup.string, 'phone', function () {
@@ -59,8 +58,9 @@ class GetUserInfo extends Component{
         header: null
     }
     componentDidMount(){
-        const { _user } = this.props.user.user;
-        const { first_name, last_name } = extractFirstLastName(_user.displayName);
+        const { user } = this.props.user;
+        // console.log("USER",)
+        const { first_name, last_name } = extractFirstLastName(user.displayName);
         this.setState({
             first_name,
             last_name
@@ -72,7 +72,8 @@ class GetUserInfo extends Component{
         try {
             await api("users/updateProfile", {...this.state.values});
             console.log("saved!");
-            this.props.navigation.navigate("Dashboard");
+            this.props.dispatchSaveInfo({...this.state.values});
+            // this.props.navigation.navigate("Dashboard");
         } catch (err) {
 
         }
