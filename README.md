@@ -43,13 +43,9 @@ If you received the __DEVELOPER_ERROR__ message when signing in, then you will n
 
 # Adding new screens
 - Since y'all will be adding screens related to when an user is authenticated, add your screens to screens/user/pages (try to create folders to avoid clutter, eg: Keep your Quiz related screens in screens/user/pages/Quiz). 
-- Then add a route at the `UserPages` property in screens/user/index.js, like so:
+- Then add a route at the `default` export in screens/user/routes.js, like so:
 ```js
- UserPages: createDrawerNavigator({
-    Dashboard: { screen: require("./user/Dashboard").default, },
-}, {
-   ...
-})
+ Dashboard: { screen: require("./pages/Quiz").default, },
 ```
 - When you need to route to another screen, you can do so by calling the "key" of which your registered your screen to. Take the above example which I registered my Dashboard screen at the `Dashboard` key. So when you need to navigate to this screen from elsewhere, you can do `this.props.navigation.navigate('Dashboard')`
 

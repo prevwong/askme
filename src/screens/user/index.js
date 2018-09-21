@@ -6,6 +6,8 @@ import { setInfo } from "store/actions/user";
 import { signOut } from "store/actions/auth";
 
 import firebase from "react-native-firebase";
+import { expandRoutesToStack } from "../../utils";
+import routes from "./routes";
 
 const RequireInfoPages = createStackNavigator({
     GetUserInfo: { screen: require("./pages/InfoRequired/GetUserInfo").default, },
@@ -13,12 +15,24 @@ const RequireInfoPages = createStackNavigator({
     drawerWidth: 300
 })
 
-const UserPages = createDrawerNavigator({
-    Dashboard: { screen: require("./pages/Dashboard").default, },
-}, {
-    contentComponent: require("../../components/Sidebar").default,
-    drawerWidth: 300
-})
+
+const DrawerRoutes = expandRoutesToStack(routes, createStackNavigator);
+const UserPages = createStackNavigator({
+    Drawer: {
+        name: 'Drawer',
+        screen: createDrawerNavigator(
+            DrawerRoutes,
+            {contentComponent: require("../../components/Sidebar").default,
+            drawerWidth: 350}
+        ),
+    },
+    ...routes
+},
+    {
+        headerMode: 'none'
+    }
+);
+
 
 class Landing extends Component {
     state = {

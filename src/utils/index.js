@@ -5,6 +5,10 @@ export const asyncForEach = async (arr, callback) => {
     }
 }
 
+export const displayName = (first_name, last_name) =>{
+    return first_name + " " + last_name;
+}
+
 export const extractFirstLastName = (displayName) => {
     displayName = displayName.split(" ");
     const first_name = displayName[0];
@@ -16,6 +20,16 @@ export const extractFirstLastName = (displayName) => {
     }
 }
 
+
+export const expandRoutesToStack = (routes, navigator) => {
+    const obj = {};
+    Object.keys(routes).forEach(route => {
+        obj[`${route}`] = {
+            screen: navigator(routes, { initialRouteName: route })
+        }
+    });
+    return obj;
+}
 
 
 
