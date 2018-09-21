@@ -4,16 +4,18 @@ import storage from 'redux-persist/lib/storage';
 
 import auth from "./auth";
 import user from "./user";
+import loader from "./loader";
 // import contacts from "./contacts";
 
 const rootReducer = combineReducers({
     auth,
-    user
+    user,
+    loader
     // contacts
 });
 
 export default persistReducer({
     key: 'root',
     storage: storage,
-    blacklist: ['auth', 'navigation']
+    blacklist: ['auth', 'loader', 'navigation']
 }, rootReducer);

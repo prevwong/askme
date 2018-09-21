@@ -80,8 +80,9 @@ class App extends React.Component {
 
     render() {
         let loggedIn = false;
-        const { authenticated, isAuthenticating, error } = this.props.auth;
+        const { authenticated, error } = this.props.auth;
         const { user } = this.props.user;
+        const {loading} = this.props.loader;
 
         console.log("recived rendr", !!user, authenticated);
         if (error) {
@@ -94,10 +95,10 @@ class App extends React.Component {
 
         return <View style={{ flex: 1 }}>
             <Container>
-                {user && <screens.user />}
-                {!user && <screens.auth />}
+                {user && <screens.UserLanding />}
+                {!user && <screens.Auth />}
             </Container>
-            {isAuthenticating &&
+            {loading &&
                 <View style={{ flexDirection: "column", flex: 1, justifyContent: "center", position: "absolute", backgroundColor: "rgba(255,255,255,0.8)", height: "100%", width: "100%" }}>
                     <Spinner />
                 </View>
@@ -117,7 +118,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    user: state.user
+    user: state.user,
+    loader: state.loader
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)

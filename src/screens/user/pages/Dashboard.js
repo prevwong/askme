@@ -3,7 +3,7 @@ import {View} from "react-native";
 import { Button, Text } from "native-base";
 import { signOut } from "store/actions/auth";
 import {connect} from "react-redux";
-import AppHeader from "../../components/AppHeader";
+import AppHeader from "components/AppHeader";
 
 class Dashboard extends Component {
     static navigationOptions = {header:null}

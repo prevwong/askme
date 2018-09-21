@@ -1,7 +1,7 @@
 import { createStackNavigator, createBottomTabNavigator, createDrawerNavigator } from 'react-navigation'
 
 const obj = {
-    auth: createBottomTabNavigator({
+    Auth: createBottomTabNavigator({
         SignIn: {
             screen: require("./auth/SignIn").default,
             navigationOptions: {
@@ -28,9 +28,9 @@ const obj = {
                 },
             }
         }),
-    user: createStackNavigator({
-        Landing: { screen: require("./user/Landing").default, },
-    })
+    UserLanding: createStackNavigator({
+        Landing: { screen: require("./user/index.js").default, },
+    }),
 }
 
 

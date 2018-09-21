@@ -40,3 +40,37 @@ If you received the __DEVELOPER_ERROR__ message when signing in, then you will n
     - exports redux store
 - /utils
   - contains helper functions
+
+# Adding new screens
+- Since y'all will be adding screens related to when an user is authenticated, add your screens to screens/user/pages (try to create folders to avoid clutter, eg: Keep your Quiz related screens in screens/user/pages/Quiz). 
+- Then add a route at the `UserPages` property in screens/user/index.js, like so:
+```js
+ UserPages: createDrawerNavigator({
+    Dashboard: { screen: require("./user/Dashboard").default, },
+}, {
+   ...
+})
+```
+- When you need to route to another screen, you can do so by calling the "key" of which your registered your screen to. Take the above example which I registered my Dashboard screen at the `Dashboard` key. So when you need to navigate to this screen from elsewhere, you can do `this.props.navigation.navigate('Dashboard')`
+
+# Using APIs
+- You should add API functions into the /src/api/routes folder. Look at the existing files in that folder for reference. If you want to create another file in the routes folder, then make sure to link that file in the `paths` object at /src/api/index.js like so:
+```js
+const paths = {
+    notifications: require("./routes/notifications").default,
+    users: require("./routes/users").default
+}
+```
+- In order to use the API in your component, you will need to call the `api(file/method)` where `method` is the name of the API function and `file` is name of the file in src/api/routes where the method is located. So for example I added a new API function called `getUsers` in src/api/routes/users, then I will call `api(user/getUsers)`
+```
+import api from "api"
+class Example extends Component {
+  myMethod(){
+    api("file/method", {params}).then(res => {
+
+    }).catch(err => {
+
+    })
+  }
+  ...
+}

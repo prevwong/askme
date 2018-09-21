@@ -14,6 +14,7 @@ import {
 import firebase from "react-native-firebase";
 import { GoogleSignin } from 'react-native-google-signin';
 import { setUser } from './user';
+import { setLoading } from './loader';
 
 function signUp() {
     return {
@@ -74,12 +75,14 @@ function logOut() {
 }
 export function unvalidateUser() {
     return (dispatch) => {
+        dispatch(setLoading(false));
         dispatch(logOut());
         dispatch(setUser(null));
     }
 }
 export function validateUser() {
     return (dispatch) => {
+        dispatch(setLoading(false));
         dispatch(logInSuccess());
         dispatch(setUser());
     }
@@ -102,6 +105,7 @@ export function createUser(email, password) {
 
 export function authenticate(email, password) {
     return (dispatch) => {
+        dispatch(setLoading(true));
         dispatch(logIn());
         firebase.auth().signInAndRetrieveDataWithEmailAndPassword(email, password).then(data => {
             dispatch(validateUser());
@@ -109,11 +113,13 @@ export function authenticate(email, password) {
             console.log("error logging in", error);
             dispatch(logInFailure(error));
         })
+        dispatch(setLoading(false));
     }
 }
 
 export function socialAuthenticate() {
     return async (dispatch) => {
+        dispatch(setLoading(true));
         try {
             // Add any configuration settings here:
             await GoogleSignin.configure({
@@ -132,8 +138,10 @@ export function socialAuthenticate() {
             dispatch(validateUser());
 
         } catch (e) {
+            dispatch(setLoading(false));
             throw new Error(e);
         }
+        
     }
 }
 
@@ -145,11 +153,12 @@ export function userNoPhone() {
 }
 
 export function signOut() {
+    
     return (dispatch) => {
+        dispatch(setLoading(true));
         console.log("signing out...")
         new Promise((resolve, reject) => {
             firebase.auth().signOut().then(async () => {
-                
                 try {
                     await GoogleSignin.revokeAccess();
                     await GoogleSignin.signOut();
@@ -163,6 +172,7 @@ export function signOut() {
                 dispatch(unvalidateUser());
                 resolve();
             })
-        })
+        });
+        
     }
 }

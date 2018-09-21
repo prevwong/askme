@@ -8,13 +8,13 @@ import { signOut } from "store/actions/auth";
 import firebase from "react-native-firebase";
 
 const RequireInfoPages = createStackNavigator({
-    GetUserInfo: { screen: require("./InfoRequired/GetUserInfo").default, },
+    GetUserInfo: { screen: require("./pages/InfoRequired/GetUserInfo").default, },
 }, {
     drawerWidth: 300
 })
 
 const UserPages = createDrawerNavigator({
-    Dashboard: { screen: require("./Dashboard").default, },
+    Dashboard: { screen: require("./pages/Dashboard").default, },
 }, {
     contentComponent: require("../../components/Sidebar").default,
     drawerWidth: 300
