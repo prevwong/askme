@@ -72,9 +72,9 @@ class App extends React.Component {
     }
     
     shouldComponentUpdate(nextProps){
-        if ( nextProps.auth.authenticated && this.props.user.user && this.state.loaded && !!this.props.user.user === !!nextProps.user.user) {
-            return false;
-        }
+        // if ( nextProps.auth.authenticated && this.props.user.user && this.state.loaded && !!this.props.user.user === !!nextProps.user.user) {
+        //     return false;
+        // }
         return true;
     }
 

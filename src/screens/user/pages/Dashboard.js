@@ -28,7 +28,7 @@ class Dashboard extends Component {
         headerRight: (
             <HeaderButtons HeaderButtonComponent={props => <HeaderButton {...props} IconComponent={Icon} iconSize={23} color="#333" />}>
                 {/* use Item or HeaderButtons.Item */}
-                <HeaderButtons.Item buttonStyle={{ borderWidth: 1, borderRadius:100, padding: 5, paddingHorizontal: 50, backgroundColor:"#fff"}} title="play " onPress={() => alert('select')} />
+                <HeaderButtons.Item buttonStyle={{ borderWidth: 1, borderRadius:100, padding: 5, paddingHorizontal: 50, backgroundColor:"#fff"}} title="play " onPress={() => navigation.navigate("Play")} />
             </HeaderButtons>
         )
     })
@@ -88,8 +88,8 @@ class Dashboard extends Component {
                         data={quiz}
                         keyExtractor={(obj, i) => obj.id}
                         renderItem={({item}) => {
-                            const { id, title, pointsEarned, completed, classroom, createdAt } = item;
-                            return <QuizItem id={id} full={true} title={title} pointsEarned={pointsEarned} completed={completed} createdAt={createdAt} classroom={classroom} {...this.props}/>
+                            const { id, title, classroom, createdAt, results } = item;
+                            return <QuizItem id={id} results={results} full={true} title={title} createdAt={createdAt} classroom={classroom} {...this.props}/>
                         }} 
                     />
                 </Content>
