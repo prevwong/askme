@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {View, Image} from "react-native";
 import { Container, Content, Form, Input, Item, Body, Button, Text, Title} from "native-base";
 import {connect} from "react-redux";
 import { Formik } from "formik";
@@ -52,6 +53,9 @@ class SignUp extends Component {
             <Container>
                 <Content contentContainerStyle={{ flex: 1, justifyContent:"center"}}>
                     <Title><Text>Sign up</Text></Title>
+                    <View style={{ marginVertical: 40, alignItems: "center" }}>
+                        <Image source={require('../../img/logo.png')} />
+                    </View>
                     <Formik
                         validationSchema={SignupSchema}
                         initialValues={{ email, password, confirmPassword }}
