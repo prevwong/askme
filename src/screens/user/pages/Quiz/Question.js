@@ -64,6 +64,10 @@ class Question extends Component {
 
     }
     redirectToResult() {
+        clearInterval(this.currentTimer)
+        this.setState({
+            currentQuestion: 0
+        })
         this.props.navigation.navigate("QuizResult", {
             result: this.state.userAnswers
         })

@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import AppHeader from "components/AppHeader";
 import { Container, Content, Text, Card, CardItem, Icon } from 'native-base';
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
-
+import questions from "api/routes/questions"
 // Required props: An object with key name as result and value as an array of object with the shape of {question : String, answer: String, choice: String}
 class Result extends Component {
 	state = {
@@ -33,7 +33,7 @@ class Result extends Component {
 		result.map((object, index) => {
 			if(object.answer.toLowerCase() === object.choice.toLowerCase()) correct++;
 		})
-
+		questions.addDannyPoint(correct * 10)
 		return correct;
 	}
 
