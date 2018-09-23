@@ -6,6 +6,7 @@ import Selection from 'components/Selection'
 import FillInTheBlank from 'components/FileInTheBlank'
 import questions from "api/routes/questions"
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
+import api from '../../../../api';
 
 const TIME = 15
 const WARNING_TIME = 3
@@ -87,7 +88,7 @@ class Question extends Component {
     }
 
     componentDidMount() {
-        questions.getQuestions().then(data => {
+        api("questions/getQuestions", {}).then(data => {
             const { id, questions } = data;
 
             this.setState({
