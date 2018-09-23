@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Button, Form, Item, Input, Title, Text, Body, Container, Content} from "native-base";
 import { connect } from 'react-redux'
 import { authenticate, socialAuthenticate, logInCancel, logInSuccess } from 'store/actions/auth'
@@ -11,7 +11,6 @@ class SignIn extends Component {
         accessCode: ''
     }
 
-   
     render() {
         const {email, password} = this.state;
         return (
