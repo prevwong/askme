@@ -1,6 +1,6 @@
 import firebase from "react-native-firebase";
 import axios from "axios";
-import { shuffle } from "utils";
+import { shuffle, decodeHTMLEntities } from "utils";
 
 // const addNumber = ({ number }) => {
 //     const { displayName, photoURL } = firebase.auth().currentUser;
@@ -34,12 +34,14 @@ const getQuestions = () => {
         axios.get('https://opentdb.com/api.php?amount=5').then(res => {
             const questions = res.data.results;
             const formatted_questions = questions.reduce((results, q) => {
-                const { question, correct_answer, incorrect_answers } = q;
+                let { question, correct_answer, incorrect_answers } = q;
+                question = decodeHTMLEntities(question);
+
                 let choices = incorrect_answers;
                 const correct_index = Math.floor(Math.random() * 4);
                 choices.splice(correct_index, 0, correct_answer);
                 choices = choices.reduce((result, choice, i) => {
-                    result["c" + (i + 1)] = choice;
+                    result["c" + (i + 1)] = decodeHTMLEntities(choice);
                     return result;
                 }, {});
                 results.push({
