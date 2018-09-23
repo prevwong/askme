@@ -28,7 +28,7 @@ class Dashboard extends Component {
         headerRight: (
             <HeaderButtons HeaderButtonComponent={props => <HeaderButton {...props} IconComponent={Icon} iconSize={23} color="#333" />}>
                 {/* use Item or HeaderButtons.Item */}
-                <HeaderButtons.Item buttonStyle={{ borderWidth: 1, borderRadius:100, padding: 5, paddingHorizontal: 50, backgroundColor:"#fff"}} title="play " onPress={() => navigation.navigate("Play")} />
+                <HeaderButtons.Item buttonStyle={{ borderWidth: 1, borderRadius:100, padding: 5, paddingHorizontal: 50, backgroundColor:"#fff"}} title="play " onPress={() => navigation.navigate("Question") } />
             </HeaderButtons>
         )
     })
@@ -40,7 +40,7 @@ class Dashboard extends Component {
         this.winnerUnsubscribe = this.winner.onSnapshot(this.winnerUpdate.bind(this));
     }
     quizUpdate(querySnapshot) {
-        const quiz = [];
+        const quiz = []
         querySnapshot.forEach(doc => {
             if (doc.exists) {
                 quiz.push({
@@ -105,7 +105,8 @@ const mapDispatchToProps = {
 
 const mapStateToProps = state => ({
     auth: state.auth,
-    user: state.user
+    user: state.user,
+    navigation: state.navigation,
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)
