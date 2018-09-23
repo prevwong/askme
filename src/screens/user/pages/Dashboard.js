@@ -34,7 +34,7 @@ class Dashboard extends Component {
     })
 
     winner = firebase.firestore().collection(`winners`).orderBy(`createdAt`, 'desc').limit(1);
-    quiz = firebase.firestore().collection(`quiz`).where(`query.participants.${firebase.auth().currentUser.uid}`, '==', true).where('query.type', '==', 'classroom').orderBy("createdAt", "desc").limit(20);
+    quiz = firebase.firestore().collection(`users/${firebase.auth().currentUser.uid}/quiz`).orderBy("created_at", "desc").limit(20);
     componentDidMount(){
         this.quizUnsubscribe = this.quiz.onSnapshot(this.quizUpdate.bind(this));
         this.winnerUnsubscribe = this.winner.onSnapshot(this.winnerUpdate.bind(this));
@@ -74,7 +74,6 @@ class Dashboard extends Component {
     }
 
     render() {
-        console.log("DASHBOARD-RENDER");
         const { authenticated} = this.props.auth;
         const {quiz, winner} = this.state;
         return (
@@ -84,12 +83,13 @@ class Dashboard extends Component {
                        winner &&
                         <Winner winner={winner} />
                     }
+                    <Text style={{ marginLeft: 10, paddingVertical: 20 }}>Recent activites</Text>
                     <FlatList
                         data={quiz}
                         keyExtractor={(obj, i) => obj.id}
                         renderItem={({item}) => {
-                            const { id, title, pointsEarned, completed, classroom, createdAt } = item;
-                            return <QuizItem id={id} full={true} title={title} pointsEarned={pointsEarned} completed={completed} createdAt={createdAt} classroom={classroom} {...this.props}/>
+                            const { id, title, pointsEarned, completed, classroom, created_at } = item;
+                            return <QuizItem  id={id} full={true} title={title ? title: "General knowledge"} pointsEarned={pointsEarned} completed={completed} created_at={created_at}/>
                         }} 
                     />
                 </Content>
