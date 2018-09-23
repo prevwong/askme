@@ -30,10 +30,13 @@ const getQuestions = () => {
 
     // PREV WONG WAS HEREEE
     const id = firebase.auth().currentUser.uid;
-    return new Promise((resolve, reject) => {
-        axios.get('https://opentdb.com/api.php?amount=5').then(res => {
+    const opentdb_err = false;
+    return new Promise(async (resolve, reject) => {
+        let formatted_questions = [];
+        try {
+            const res = await axios.get('https://opentdb.com/api.php?amount=5');
             const questions = res.data.results;
-            const formatted_questions = questions.reduce((results, q) => {
+            formatted_questions = questions.reduce((results, q) => {
                 let { question, correct_answer, incorrect_answers } = q;
                 question = decodeHTMLEntities(question);
 
@@ -52,28 +55,30 @@ const getQuestions = () => {
                 });
                 return results;
             }, []);
-
-            let firebase_questions = [];
-            firebase.firestore().collection("questions").get().then(querySnapshot => {
-                querySnapshot.forEach((doc) => {
-                    firebase_questions.push(doc.data())
-                });
-                firebase_questions = shuffle(firebase_questions);
-
-                const final_question = [...formatted_questions, ...firebase_questions];
-                firebase.firestore().collection(`users/${id}/quiz`).add({
-                    created_at: new Date(),
-                    questions: final_question
-                }).then((doc) => {
-                    console.log("doc", doc, doc.id)
-                    resolve({
-                        id: doc.id,
-                        questions: final_question
-                    });
-                }).catch(err => {
-                    reject(err);
-                })
+        } catch (err) {
+            opentdb_err = true;
+        }
+        let firebase_questions = [];
+        firebase.firestore().collection("questions").get().then(querySnapshot => {
+            querySnapshot.forEach((doc) => {
+                firebase_questions.push(doc.data())
             });
+            firebase_questions = shuffle(firebase_questions);
+            const n = opentdb_err ? 10 : 5;
+            firebase_questions = firebase_questions.slice(0, n);
+            const final_question = [...formatted_questions, ...firebase_questions];
+            firebase.firestore().collection(`users/${id}/quiz`).add({
+                created_at: new Date(),
+                questions: final_question
+            }).then((doc) => {
+                console.log("doc", doc, doc.id)
+                resolve({
+                    id: doc.id,
+                    questions: final_question
+                });
+            }).catch(err => {
+                reject(err);
+            })
         });
     });
 }
