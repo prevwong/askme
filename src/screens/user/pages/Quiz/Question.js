@@ -19,7 +19,7 @@ class Question extends Component {
         this.state = {
             questions: [
             ],
-            currentQuestion: 9,
+            currentQuestion: 0,
             timer: TIME,
             gameStart: false,
             userAnswers: [],
@@ -57,8 +57,6 @@ class Question extends Component {
             // console.log(this.state.currentQuestion)
         } else {
             alert("You have finished the quiz!")
-            clearInterval(this.currentTimer)
-            this.redirectToResult()
         }
         this.setState({
             timer: TIME
@@ -86,13 +84,19 @@ class Question extends Component {
             questions.forEach(question => {
                 tempQuestions.push(question.data())
             })
+            console.log(tempQuestions)
             this.setState({
                 questions: tempQuestions,
                 gameStart: true,
             })
             // console.log(this.state)
             this.currentTimer = setInterval(() => {
-                this.decreaseTimer()
+                console.log(this.state.userAnswers.length, this.state.questions.length)
+                if (this.state.userAnswers.length === this.state.questions.length) {
+                    this.redirectToResult()
+                } else {
+                    this.decreaseTimer()
+                }
                 // alert("Decreased timer")
             }, 1000)
         }).catch(err => {

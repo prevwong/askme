@@ -23,7 +23,7 @@ class Result extends Component {
 	}
 	
 	renderBackgroundColor = (e) => ({
-		backgroundColor: e.answer === e.choice ? '#B6EBBE' : '#EBC8D4'
+		backgroundColor: e.answer.toLowerCase() === e.choice.toLowerCase() ? '#B6EBBE' : '#EBC8D4'
 	})
 
 	countCorrect = () => {
@@ -31,7 +31,7 @@ class Result extends Component {
 		const result = navigation.getParam('result'); // Array
 		var correct = 0;
 		result.map((object, index) => {
-			if(object.answer === object.choice) correct++;
+			if(object.answer.toLowerCase() === object.choice.toLowerCase()) correct++;
 		})
 
 		return correct;
@@ -49,7 +49,7 @@ class Result extends Component {
 					</Text>
 				</CardItem>
 				
-				{!(object.choice === object.answer)&& <CardItem style={styles.cardItem}>
+				{!(object.choice.toLowerCase() === object.answer.toLowerCase())&& <CardItem style={styles.cardItem}>
 					<Icon name="close" />
 					<Text>
 						{ object.choice }
