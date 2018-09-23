@@ -9,7 +9,7 @@ import firebase from "react-native-firebase";
 import Winner from "../../../components/Winner";
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
 
-class Dashboard extends Component {his.props.
+class Dashboard extends Component {
     state = {
         quiz: [],
         winner: null

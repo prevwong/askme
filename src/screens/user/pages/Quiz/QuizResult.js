@@ -31,6 +31,7 @@ class Result extends Component {
 		const result = navigation.getParam('result'); // Array
 		var correct = 0;
 		result.map((object, index) => {
+			console.log(object)
 			if(object.answer.toLowerCase() === object.choice.toLowerCase()) correct++;
 		})
 		questions.addDannyPoint(correct * 10)
