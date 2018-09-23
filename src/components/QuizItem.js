@@ -9,11 +9,16 @@ dayjs.extend(relativeTime)
 
 class QuizItem extends Component {
     navigate(){
-        this.props.navigation.navigate("Quiz");
+        const { category}= this.props;
+        let params = {};
+        if (category ) {
+            params["category"] = category;
+        }
+        this.props.navigation.navigate("Question", params);
     }
     render(){
         const {user} = this.props.user; 
-        let {generalKnowledge, title, classroom, full, createdAt, results} = this.props;
+        let { generalKnowledge, title, classroom, full, createdAt, results, category } = this.props;
 
         
         let result = results ? results[user.uid] : false,
@@ -22,12 +27,12 @@ class QuizItem extends Component {
 
 
         if ( generalKnowledge ) {
-            title = "General Knowledge";
+            title = "Are you up for\na challenge of\nintelligence ?";
             completed = false;
         }
         return (
             <Card style={{ flex:1,  borderRadius: 4, elevate: 100, paddingVertical: 10, height: full || generalKnowledge ? "auto" : 160}}>
-                <View style={{flex:1}}>
+                <View style={{flex:2}}>
                     { full && 
                         <CardItem>
                             <Left>
@@ -40,11 +45,11 @@ class QuizItem extends Component {
                     }
                     <CardItem cardBody style={{ paddingLeft: 15 }}>
                         <Left>
-                            <Text style={{ width: "100%", textDecorationLine: completed ? 'line-through' : "none", fontSize: 30 }}>{title}</Text>
+                            <Text style={{ lineHeight:60, width: "100%", textDecorationLine: completed ? 'line-through' : "none", fontSize: 30 }}>{title}</Text>
                         </Left>
                     </CardItem>
                     { generalKnowledge &&
-                        <CardItem cardBody style={{ marginBottom:10, paddingLeft: 15 }}>
+                        <CardItem cardBody style={{ marginVertical:10, paddingLeft: 15 }}>
                             <Left>
                                 <Text style={{ width: "100%", textDecorationLine: completed ? 'line-through' : "none", fontSize: 15 }}>Let's see how much you really know</Text>
                             </Left>

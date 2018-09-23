@@ -8,7 +8,8 @@ import { shuffle, decodeHTMLEntities } from "utils";
 //     firebase.firestore().collection("quiz").get().then()
 // }
 
-const getQuestions = () => {
+const getQuestions = (categoryId) => {
+    console.log("getting...", categoryId)
     // return new Promise((resolve, reject) => {
     //     let questions = []
     //     firebase.firestore().collection("questions").get().then((questions) => {

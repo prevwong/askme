@@ -43,6 +43,14 @@ export const shuffle = (a) =>  {
     return a;
 }
 
+export const capitalize = (str) => {
+    try {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    } catch (err) {
+        return str;
+    }
+}
+
 export const decodeHTMLEntities = (text) => {
     var entities = [
         ['amp', '&'],
