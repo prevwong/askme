@@ -16,16 +16,19 @@ class VerifyPhone extends Component {
         });
     }
     verify() {
-        return this.props.onSuccess();
+        
         const { verificationId, phone } = this.props;
         const { code } = this.state;
         const { user } = this.props.user;
         var credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code);
-        user.linkAndRetrieveDataWithCredential(credential).then(async (res) => {
+        return user.linkAndRetrieveDataWithCredential(credential).then(async (res) => {
+           console.log("link successful!")
            this.props.onSuccess();
         }).catch(err => {
-            console.log("link error!");
+            console.log("link error!", err);
         });
+
+        
     }
     render(){
         const {code} = this.state;

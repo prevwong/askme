@@ -13,9 +13,9 @@ import { signOut } from '../store/actions/auth';
 class Sidebar extends Component {
     state = {
         links : [
-            { title: "Profile", page: "" },
+            { title: "Dashboard", page: "Dashboard" },
             { title: "Leaderboard", page: "LeaderBoard" },
-            { title: "Settings", page: "" },
+            { title: "Profile", page: "Profile" },
             { title: "Sign out", signOut: true } 
         ]
     }
@@ -23,7 +23,10 @@ class Sidebar extends Component {
     }
     navigateToScreen = (route) => () => {
         const navigateAction = NavigationActions.navigate({
-            routeName: route
+            routeName: route,
+            params : {
+                sidebar: true
+            }
         });
         this.props.navigation.dispatch(navigateAction);
     }

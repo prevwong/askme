@@ -1,3 +1,4 @@
+import { parseNumber, formatNumber } from "libphonenumber-js";
 
 export const asyncForEach = async (arr, callback) => {
     for (let i = 0; i < arr.length; i++) {
@@ -62,7 +63,13 @@ export const decodeHTMLEntities = (text) => {
     return text;
 }
 
-
+export const formatPhoneNumber = (phone_number) => {
+    const parsed = parseNumber(phone_number, {
+        extended: true,
+        defaultCountry: 'MY'
+    });
+    return formatNumber(parsed, 'E.164');
+}
 export default {
     asyncForEach,
 }

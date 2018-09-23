@@ -15,7 +15,7 @@ const getQuestions = () => {
     //         // snapshot.forEach(question => {
     //         //     console.log(question.data())
     //         // })
-    //         if (questions.length == 0){
+    //         if (questions.lenrgth == 0){
     //             reject("No questions in database")
     //         } else {
     //             // console.log(questions)
@@ -41,7 +41,7 @@ const getQuestions = () => {
                 question = decodeHTMLEntities(question);
 
                 let choices = incorrect_answers;
-                const correct_index = Math.floor(Math.random() * 4);
+                const correct_index = Math.floor(Math.random() * choices.length);
                 choices.splice(correct_index, 0, correct_answer);
                 choices = choices.reduce((result, choice, i) => {
                     result["c" + (i + 1)] = decodeHTMLEntities(choice);

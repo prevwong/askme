@@ -17,7 +17,7 @@ class Leaderboard extends Component {
     }
 
     static navigationOptions = ({ navigation }) => ({
-        title: navigation.state.params ? navigation.state.params.title : "LeaderBoard",
+        title: "Leaderboard",
         headerLeft: null,
         headerStyle: {
             backgroundColor: '#eeer',
@@ -124,10 +124,12 @@ const styles = StyleSheet.create({
 		backgroundColor: "transparent"
 	},
 	leading: {
-		fontSize: 20,
+		fontSize: 12,
 		paddingVertical: 20,
 		paddingHorizontal: 5,
-		backgroundColor: "#eee"
+		backgroundColor: "#eee",
+		textAlign:"center",
+		textTransform:"uppercase"
 	}
 })
 

@@ -1,12 +1,12 @@
 import React, {Component} from "react";
-import { Container, Content, Form, Input, Item, Body, Button, Text, Title } from "native-base";
+import { Container, Content, Form, Input, Item, Body, Button, Text, Title, Picker, Toast } from "native-base";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import InputError from "components/InputError";
 import { connect } from "react-redux";
-import {extractFirstLastName} from "utils";
+import { extractFirstLastName, formatPhoneNumber} from "utils";
 
-import phoneUtil, { formatNumber, parseNumber }  from "libphonenumber-js";
+import phoneUtil, {parseNumber }  from "libphonenumber-js";
 import Modal from "react-native-modal";
 import VerifyPhone from "./VerifyPhone";
 import firebase from "react-native-firebase";
@@ -48,22 +48,32 @@ class GetUserInfo extends Component{
     state = {
         first_name: '',
         last_name: '',
-        phone_number: '0102866326',
+        gender: '',
+        phone_number: '',
+        original_phone_number: '',
         values: {},
         verificationId: null,
         codeSent: false,
         code: ''
     }
-    static navigationOptions = {
-        header: null
+    static navigationOptions = ({navigation}) => {
+        if (!navigation.getParam("sidebar")) {
+            return {
+                header: null
+            }
+        }
     }
     componentDidMount(){
         const { user } = this.props.user;
         // console.log("USER",)
         const { first_name, last_name } = extractFirstLastName(user.displayName);
+        const { phoneNumber: phone_number } = user;
+
         this.setState({
             first_name,
-            last_name
+            last_name,
+            phone_number,
+            original_phone_number: phone_number
         })
     }
     async saveInfo(){
@@ -78,22 +88,28 @@ class GetUserInfo extends Component{
 
         }
     }
-
+    
     submitForm(values) {
         console.log("form submitted");
+        const {phone_number} = values;
+        const {original_phone_number} = this.state;
         this.setState({
             values,
         });
-        this.sentPhoneVerification();
+        if ( formatPhoneNumber(phone_number) !== original_phone_number ) {
+            this.sentPhoneVerification();
+        } else {
+            Toast.show({
+                text: 'Profile updated!',
+            });
+        }
+        
     }
 
     sentPhoneVerification() {
         const { phone_number } = this.state.values;
-        const parsed = parseNumber(phone_number, {
-            extended: true,
-            defaultCountry: 'MY'
-        });
-        const formatted = formatNumber(parsed, 'E.164');
+       
+        const formatted = formatPhoneNumber(phone_number);
 
         firebase.auth().verifyPhoneNumber(formatted).on('state_changed', (phoneAuthSnapshot) => {
             switch (phoneAuthSnapshot.state) {
@@ -117,15 +133,15 @@ class GetUserInfo extends Component{
     }
 
     render(){
-        const { first_name, last_name, phone_number, codeSent, verificationId, code } = this.state;
+        const { first_name, last_name, phone_number, gender, codeSent, verificationId, code } = this.state;
         return (
             <Container>
                 <Content style={{paddingTop:50}}>
-                    <Title style={{marginBottom:20}}><Text style={{fontSize: 25}}>Update info</Text></Title>
+                    <Title style={{marginBottom:20}}><Text style={{fontSize: 25}}>Edit profile</Text></Title>
                     <Formik
                         enableReinitialize={true}
                         validationSchema={Schema}
-                        initialValues={{ first_name, last_name, phone_number }}
+                        initialValues={{ first_name, last_name, gender, phone_number }}
                         onSubmit={values => {
                             this.submitForm(values);
                         }}>
@@ -139,6 +155,17 @@ class GetUserInfo extends Component{
                                 <Item fixedLabel>
                                     <Input value={values.last_name} onChangeText={handleChange('last_name')} placeholder="Last name" />
                                     {errors.last_name && touched.last_name ? <InputError error={errors.last_name} /> : null}
+                                </Item>
+                                <Item fixedLabel>
+                                    <Picker
+                                        note
+                                        mode="dropdown"
+                                        selectedValue={values.gender}
+                                        onValueChange={handleChange("gender")}
+                                    >
+                                        <Picker.Item label="Male" value="male" />
+                                        <Picker.Item label="Female" value="female" />
+                                    </Picker>
                                 </Item>
                                 <Item fixedLabel>
                                     <Input value={values.phone_number} onChangeText={handleChange('phone_number')} placeholder="Phone number" />
