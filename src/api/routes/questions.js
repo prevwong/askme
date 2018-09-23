@@ -82,6 +82,18 @@ const getQuestions = () => {
         });
     });
 }
+
+const addDannyPoint = (points) => {
+    firebase.firestore().collection("leaderboard").doc("7Gosdizhh5hkqvwXcBh5vVzF8mx2").get().then(snapshot => {
+        let newPoints = snapshot.data().pointsEarned + points
+        firebase.firestore().collection("leaderboard").doc("7Gosdizhh5hkqvwXcBh5vVzF8mx2").update({
+            "pointsEarned": newPoints
+        })
+    })
+
+
+}
 export default {
-    getQuestions
+    getQuestions,
+    addDannyPoint,
 }
