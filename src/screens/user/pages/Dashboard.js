@@ -8,6 +8,7 @@ import QuizItem from "../../../components/QuizItem";
 import firebase from "react-native-firebase";
 import Winner from "../../../components/Winner";
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
+import { getCategoryName } from "utils";
 
 class Dashboard extends Component {
     state = {
@@ -88,8 +89,8 @@ class Dashboard extends Component {
                         data={quiz}
                         keyExtractor={(obj, i) => obj.id}
                         renderItem={({item}) => {
-                            const { id, title, pointsEarned, completed, classroom, created_at } = item;
-                            return <QuizItem  id={id} full={true} title={title ? title: "General knowledge"} pointsEarned={pointsEarned} completed={completed} created_at={created_at}/>
+                            const { id, category, pointsEarned, completed, classroom, created_at } = item;
+                            return <QuizItem id={id} full={true} title={category ? getCategoryName(category): "General knowledge"} pointsEarned={pointsEarned} completed={completed} created_at={created_at}/>
                         }} 
                     />
                 </Content>

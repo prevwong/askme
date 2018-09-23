@@ -51,6 +51,20 @@ export const capitalize = (str) => {
     }
 }
 
+export const getCategoryName = (id) => {
+    let categories = {
+        18: "science",
+        21: "sports",
+        25: "art",
+        27: "animals",
+        22: "geography"
+    };
+
+    return capitalize(categories[id]);
+
+
+}
+
 export const decodeHTMLEntities = (text) => {
     var entities = [
         ['amp', '&'],
