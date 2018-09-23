@@ -46,7 +46,7 @@ export default class QuizItem extends Component {
                     }
                     <CardItem cardBody style={{ paddingLeft: 15 }}>
                         <Left>
-                            <Text style={{ lineHeight:60, width: "100%", textDecorationLine: completed ? 'line-through' : "none", fontSize: 30 }}>{title}</Text>
+                            <Text style={{ lineHeight:55, width: "100%", textDecorationLine: completed ? 'line-through' : "none", fontSize: 30 }}>{title}</Text>
                         </Left>
                     </CardItem>
                     { generalKnowledge &&
