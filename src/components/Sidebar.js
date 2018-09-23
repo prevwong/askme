@@ -14,7 +14,7 @@ class Sidebar extends Component {
     state = {
         links : [
             { title: "Profile", page: "" },
-            { title: "Leaderboard", page: "" },
+            { title: "Leaderboard", page: "LeaderBoard" },
             { title: "Settings", page: "" },
             { title: "Sign out", signOut: true } 
         ]
@@ -32,7 +32,7 @@ class Sidebar extends Component {
         if ( link.signOut ) {
             this.props.dispatchSignOut()
         } else {
-
+            this.navigateToScreen(link.page)();
         }
     }
 
