@@ -19,7 +19,7 @@ class Question extends Component {
         this.state = {
             questions: [
             ],
-            currentQuestion: 9,
+            currentQuestion: 0,
             timer: TIME,
             gameStart: false,
             userAnswers: [],
@@ -81,13 +81,11 @@ class Question extends Component {
     }
 
     componentDidMount() {
-        questions.getQuestions().then(questions => {
-            let tempQuestions = []
-            questions.forEach(question => {
-                tempQuestions.push(question.data())
-            })
+        questions.getQuestions().then(data => {
+            const {id, questions} = data;
+            
             this.setState({
-                questions: tempQuestions,
+                questions,
                 gameStart: true,
             })
             // console.log(this.state)

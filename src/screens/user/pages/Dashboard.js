@@ -8,6 +8,7 @@ import QuizItem from "../../../components/QuizItem";
 import firebase from "react-native-firebase";
 import Winner from "../../../components/Winner";
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
+import axios from "axios";
 
 class Dashboard extends Component {
     state = {
@@ -39,6 +40,8 @@ class Dashboard extends Component {
         this.quizUnsubscribe = this.quiz.onSnapshot(this.quizUpdate.bind(this));
         this.winnerUnsubscribe = this.winner.onSnapshot(this.winnerUpdate.bind(this));
     }
+    
+
     quizUpdate(querySnapshot) {
         const quiz = []
         querySnapshot.forEach(doc => {
