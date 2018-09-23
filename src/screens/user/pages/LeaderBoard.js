@@ -4,11 +4,12 @@ import { Button, Text, Content, Body, Container, Card, CardItem, Title, Icon } f
 import { signOut } from "store/actions/auth";
 import {connect} from "react-redux";
 import AppHeader from "components/AppHeader";
-import QuizItem from "../../../components/QuizItem";
+import QuizItem from "components/QuizItem";
 import firebase from "react-native-firebase";
-import Winner from "../../../components/Winner";
+import Winner from "components/Winner";
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
 import leaderboard from 'api/routes/leaderboard';
+import api from "../../../api";
 
 class Leaderboard extends Component {
     state = {
@@ -30,7 +31,7 @@ class Leaderboard extends Component {
     })
 	
 	componentDidMount() {
-		leaderboard.getLeaderBoard().then(lb => {
+		api("leaderboard/getLeaderBoard").then(lb => {
 			let tempLeaderBoard = [];
 			lb.forEach(user => {
 				tempLeaderBoard.push(user.data())

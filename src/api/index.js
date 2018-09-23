@@ -1,6 +1,8 @@
 const paths = {
     notifications: require("./routes/notifications").default,
-    users: require("./routes/users").default
+    users: require("./routes/users").default,
+    questions: require("./routes/questions").default,
+    leaderboard: require("./routes/leaderboard").default
 }
 export default api = async (path, params) => {
     const path0 = path.split('/')[0];
