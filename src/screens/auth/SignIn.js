@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Image } from 'react-native';
 import { Button, Form, Item, Input, Title, Text, Body, Container, Content} from "native-base";
 import { connect } from 'react-redux'
 import { authenticate, socialAuthenticate, logInCancel, logInSuccess } from 'store/actions/auth'
@@ -17,6 +17,9 @@ class SignIn extends Component {
             <Container>
                 <Content contentContainerStyle={{ flex: 1, flexDirection: "column", justifyContent: 'center', paddingHorizontal: 20 }}>
                     <Title><Text>Sign In</Text></Title>
+                    <View style={{marginVertical:40, alignItems:"center"}}>
+                        <Image  source={require('../../img/logo.png')} />
+                    </View>
                     <Form>
                         <Item>
                             <Input onChangeText={(email => this.setState({email}))} placeholder="Email" />
