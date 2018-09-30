@@ -9,11 +9,13 @@ import firebase from "react-native-firebase";
 import Winner from "../../../components/Winner";
 import HeaderButtons, { HeaderButton, Item as HeaderItem } from 'react-navigation-header-buttons';
 import Carousel from 'react-native-snap-carousel';
+import { capitalize } from "utils";
 
 class Play extends Component {
     state = {
         classrooms: [],
-        winner: null
+        winner: null,
+        categories: []
     }
     static navigationOptions = ({ navigation }) => ({
         title: "Start a new game",
@@ -22,9 +24,32 @@ class Play extends Component {
         },
     })
 
-    quiz = firebase.firestore().collection(`quiz`).where(`query.participants.${firebase.auth().currentUser.uid}`, '==', true).where('query.type', '==', 'classroom').orderBy("createdAt", "desc");
+    // quiz = firebase.firestore().collection(`quiz`).where(`query.participants.${firebase.auth().currentUser.uid}`, '==', true).where('query.type', '==', 'classroom').orderBy("createdAt", "desc");
     componentDidMount(){
-        this.quizUnsubscribe = this.quiz.onSnapshot(this.quizUpdate.bind(this));
+        // this.quizUnsubscribe = this.quiz.onSnapshot(this.quizUpdate.bind(this));
+        this.getCategories();
+    }
+    getCategories() {
+        let categories = {
+            "science": 18,
+            "sports" : 21,
+            "art" : 25,
+            "animals": 27,
+            "geography": 22
+        };
+
+        const format = Object.keys(categories).reduce((result, category) => {
+            result.push({
+                id: categories[category],
+                title: capitalize(category),
+                results: false
+            });
+            return result;
+        }, [])
+        console.log("format", format);
+        this.setState({
+            categories: format
+        })
     }
     quizUpdate(querySnapshot) {
         const quiz = [];
@@ -69,33 +94,25 @@ class Play extends Component {
     }
 
     render() {
-        const { classrooms} = this.state;
+        const { classrooms, categories } = this.state;
+        console.log("categories", categories)
         return (
             <Container>
-                <Content style={{backgroundColor:"#eee", padding: 10}}>
-                    <QuizItem generalKnowledge = {true} />
-                    <FlatList
-                        data={classrooms}
-                        keyExtractor={(obj, i) => obj.classroomId}
-                        renderItem={({item}) => {
-                            const { title, classroomId, quizzes } = item;
-                            return (
-                                <Content style={{paddingTop:20}} key={classroomId} style={{ flex: 1 }}>
-                                    <Text style={{marginLeft: 10, paddingVertical: 20}}>{title}</Text>
-                                    <Carousel
-                                        loop={true}
-                                        data={quizzes}
-                                        renderItem={({ item, index }) => {
-                                            const { id, title, classroom, createdAt, results } = item;
-                                            return <QuizItem id={id} full={false} title={title} results={results} createdAt={createdAt} classroom={classroom} {...this.props} />
-                                        }}
-                                        sliderWidth={400}
-                                        itemWidth={200}
-                                    />
-                                </Content>
-                            )
-                        }} 
-                    />
+                <Content style={{ backgroundColor: "#eee", padding: 10 }} contentContainerStyle={{ justifyContent:"center", flex: 1 }}>
+                    <QuizItem generalKnowledge = {true} {...this.props} />
+                    <Content style={{ paddingTop: 20 }} style={{ flex: 1 }}>
+                        <Text style={{ marginLeft: 10, paddingVertical: 20 }}>Categories</Text>
+                        <Carousel
+                            loop={true}
+                            data={categories}
+                            renderItem={({ item, index }) => {
+                                const { id, title, results } = item;
+                                return <QuizItem id={id} full={false} title={title} results={results} category={id} {...this.props} />
+                            }}
+                            sliderWidth={400}
+                            itemWidth={200}
+                        />
+                    </Content>
                 </Content>
             </Container>
         )

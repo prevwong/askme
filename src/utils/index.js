@@ -43,6 +43,28 @@ export const shuffle = (a) =>  {
     return a;
 }
 
+export const capitalize = (str) => {
+    try {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    } catch (err) {
+        return str;
+    }
+}
+
+export const getCategoryName = (id) => {
+    let categories = {
+        18: "science",
+        21: "sports",
+        25: "art",
+        27: "animals",
+        22: "geography"
+    };
+
+    return capitalize(categories[id]);
+
+
+}
+
 export const decodeHTMLEntities = (text) => {
     var entities = [
         ['amp', '&'],

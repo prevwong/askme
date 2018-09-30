@@ -87,7 +87,8 @@ class Question extends Component {
     }
 
     componentDidMount() {
-        questions.getQuestions().then(data => {
+        const category = this.props.navigation.getParam("category");
+        questions.getQuestions(category ? category: false).then(data => {
             const { id, questions } = data;
 
             this.setState({

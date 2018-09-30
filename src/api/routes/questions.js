@@ -8,7 +8,8 @@ import { shuffle, decodeHTMLEntities } from "utils";
 //     firebase.firestore().collection("quiz").get().then()
 // }
 
-const getQuestions = () => {
+const getQuestions = (categoryId) => {
+    console.log("getting...", categoryId)
     // return new Promise((resolve, reject) => {
     //     let questions = []
     //     firebase.firestore().collection("questions").get().then((questions) => {
@@ -34,7 +35,8 @@ const getQuestions = () => {
     return new Promise(async (resolve, reject) => {
         let formatted_questions = [];
         try {
-            const res = await axios.get('https://opentdb.com/api.php?amount=5');
+            const url = categoryId ? `&category=${categoryId}` : "";
+            const res = await axios.get('https://opentdb.com/api.php?amount=5' + url);
             const questions = res.data.results;
             formatted_questions = questions.reduce((results, q) => {
                 let { question, correct_answer, incorrect_answers } = q;
@@ -69,7 +71,8 @@ const getQuestions = () => {
             const final_question = [...formatted_questions, ...firebase_questions];
             firebase.firestore().collection(`users/${id}/quiz`).add({
                 created_at: new Date(),
-                questions: final_question
+                questions: final_question,
+                category: categoryId
             }).then((doc) => {
                 console.log("doc", doc, doc.id)
                 resolve({

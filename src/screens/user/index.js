@@ -50,7 +50,7 @@ class Landing extends Component {
     async onUserUpdate(doc) {
         if ( !doc.exists ) {
             this.props.dispatchSignOut();
-        }
+        }routes
         console.log("onUserupdate", `users/${firebase.auth().currentUser.uid}`);
     }
     async onProfileUpdate(doc) {
