@@ -22,9 +22,9 @@ const SignupSchema = Yup.object().shape({
 
 class SignUp extends Component {
     state = {
-        email: 'prevwong@gmail.com',
-        password: 'imgeneva2319',
-        confirmPassword: 'imgeneva2319'
+        email: '',
+        password: '',
+        confirmPassword: ''
     }
     renderInput({ input, label, type, meta: { touched, error, warning } }) {
         var hasError = false;
